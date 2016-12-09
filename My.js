@@ -1,27 +1,36 @@
+// Parse function and return function arguments
 function getArgs(func) {
     return (func + '')
-        .replace(/[/][/].*$/mg,'') // strip single-line comments
-        .replace(/\s+/g, '') // strip white space
-        .replace(/[/][*][^/*]*[*][/]/g, '') // strip multi-line comments
-        .split('){', 1)[0].split(')=>{', 1)[0].replace(/^[^(]*[(]/, '') // extract the parameters
-        .replace(/=[^,]+/g, '') // strip any ES6 defaults
-        .split(',').filter(Boolean); // split & filter [""]
+        .replace(/[/][/].*$/mg,'')
+        .replace(/\s+/g, '')
+        .replace(/[/][*][^/*]*[*][/]/g, '')
+        .split('){', 1)[0].split(')=>{', 1)[0].replace(/^[^(]*[(]/, '')
+        .replace(/=[^,]+/g, '')
+        .split(',').filter(Boolean);
 }
 
+// Example object
 class MySupperFramework {
     constructor() {
         this.injections = {};
     }
 
+    /* Wrapper function.
+     *
+     * Takes name of injection
+     * Return wrapped function that can be called
+     */
     wrapFunction(name) {
-        let _this = this;
-
-        return function() {
-            return _this.get(name, ...arguments)
+        return (...args) => {
+            return this.get(name, ...args)
         }
     }
 
-
+    /* Define function.
+     *
+     * Takes name of injection and injection function
+     * Add injection to frameworks injection container and wrap all internal injections
+     */
     define (name, action) {
         let _this = this;
 
@@ -30,9 +39,10 @@ class MySupperFramework {
 
         let injections = {};
 
+        // Find and wrap all internal injections
         getArgs(action).forEach(function(arg, index) {
             if (!! _this.injections[ arg ])
-                injections[index] = _this.wrapFunction(arg);//_this.wrapFunction( _this.injections[ arg ].action );
+                injections[index] = _this.wrapFunction(arg);
         });
 
         this.injections[ name ] = {
@@ -41,14 +51,19 @@ class MySupperFramework {
         };
     }
 
+    /* Call injection.
+     *
+     * Takes name of injection and all other arguments
+     * Return result of injections execution with arguments
+     */
     get (name) {
         if( !this.injections[ name ] ) throw Error("FUCK!");
 
         let action = this.injections[ name ].action;
         let injections = this.injections[ name ].injections;
 
-        var args = [];
-        for (var i = 0; i < arguments.length; i++) {
+        let args = [];
+        for (let i = 0; i < arguments.length; i++) {
             args[i] = arguments[i];
         }
 
