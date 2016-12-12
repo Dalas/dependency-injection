@@ -3,7 +3,7 @@
  */
 
 let expect = require('chai').expect;
-let FW = require('../My').MY;
+let FW = require('../src/My').MY;
 
 
 describe('Call dependencies', () => {

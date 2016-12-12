@@ -1,4 +1,10 @@
-// Parse function and return function arguments
+/**
+ * This function parse function arguments.
+ * @type {function}
+ * @param {function} func
+ * @returns {Array.<string>}
+ * @example getArgs((a) => { return a }) -> ['a']
+ */
 function getArgs(func) {
     return (func + '')
         .replace(/[/][/].*$/mg,'')
@@ -9,16 +15,23 @@ function getArgs(func) {
         .split(',').filter(Boolean);
 }
 
-// Example object
+/**
+ * @name MySupperFramework
+ */
 class MySupperFramework {
+
     constructor() {
+        /**
+         * Contains all frameworks injections.
+         * @name injections
+         */
         this.injections = {};
     }
 
-    /* Wrapper function.
-     *
-     * Takes name of injection
-     * Return wrapped function that can be called
+    /**
+     * Wrap injection and returns function that can be called without 'get'.
+     * @param {string} name
+     * @returns {function(...[*])}
      */
     wrapFunction(name) {
         return (...args) => {
@@ -26,10 +39,10 @@ class MySupperFramework {
         }
     }
 
-    /* Define function.
-     *
-     * Takes name of injection and injection function
-     * Add injection to frameworks injection container and wrap all internal injections
+    /**
+     * Define new dependency injection, that can be called using get.
+     * @param {string} name
+     * @param {function} action
      */
     define (name, action) {
         let _this = this;
@@ -51,10 +64,10 @@ class MySupperFramework {
         };
     }
 
-    /* Call injection.
-     *
-     * Takes name of injection and all other arguments
-     * Return result of injections execution with arguments
+    /**
+     * Call injection with arguments {...args} passed after injection name.
+     * @param {string} name
+     * @returns {*} - result of injection execution
      */
     get (name) {
         if( !this.injections[ name ] ) throw Error("FUCK!");
