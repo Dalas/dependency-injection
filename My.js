@@ -78,9 +78,11 @@ class MySupperFramework {
 }
 
 
-let My = new MySupperFramework();
+//let My = new MySupperFramework();
 
-My.define("getOne", () => {
+exports.MY = new MySupperFramework();
+
+/*My.define("getOne", () => {
     return 1
 });
 
@@ -103,4 +105,4 @@ console.log(res);
 res = My.get("multiplyOne", 4, 1);
 console.log(res);
 res = My.get("getTwo", 4);
-console.log(res);
+console.log(res);*/
